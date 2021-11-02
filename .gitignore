@@ -1,3 +1,12 @@
+# Node
+node_modules/
+
+# MacOS
+.DS_Store
+
+# Java
+*.class
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
