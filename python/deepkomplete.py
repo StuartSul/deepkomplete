@@ -145,6 +145,11 @@ class DeepKomplete:
 
         if query in self.bcl2bcl:
             return self.bcl2bcl[query]
+        
+        query = query.upper()
+    
+        if query in self.bcl2bcl:
+            return bcl2bcl[query]
 
         found_keywords = self.deterministic_query_analysis(query)
 
@@ -187,7 +192,7 @@ class DeepKomplete:
     def suggest(self, query, history):
         '''Suggest a set of queries given the current query and user history'''
 
-        query = query.replace(' ', '')
+        query = query.upper().replace(' ', '')
         keyword_candidates = self.stochastic_query_analysis(query)
         
         similarity_vector = self.get_similarity_vector(history)
