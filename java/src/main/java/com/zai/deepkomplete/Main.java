@@ -24,7 +24,6 @@ public class Main {
     static DeepKomplete dk;
 
     public static void main(String[] args) {
-        System.out.println("Working Directory = " + System.getProperty("user.dir"));
         System.out.println("Loading DeepKomplete...");
         try {
             dk = new DeepKomplete();
@@ -39,6 +38,8 @@ public class Main {
         post("/submit", (req, res) -> submit(req, res));
         post("/clear", (req, res) -> clear(req, res));
 
+        memoryStats();
+        System.out.println();
         System.out.println("Running on port " + port + "...");
     }
 
@@ -106,5 +107,16 @@ public class Main {
             response.header("Access-Control-Allow-Headers", headers);
             response.type("application/json");
         });
+    }
+
+    private static void memoryStats() {
+        int mb = 1024 * 1024;
+        Runtime instance = Runtime.getRuntime();
+        System.out.println("\n***** Heap utilization statistics [MB] *****");
+        System.out.println("Total Memory : " + (instance.totalMemory() / mb) + "MB");
+        System.out.println("Free Memory  : " + (instance.freeMemory() / mb) + "MB");
+        System.out.println("Used Memory  : "
+                + ((instance.totalMemory() - instance.freeMemory()) / mb) + "MB");
+        System.out.println("Max Memory   : " + (instance.maxMemory() / mb) + "MB");
     }
 }
