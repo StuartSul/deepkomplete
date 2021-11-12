@@ -1,3 +1,3 @@
 mvn compile
 
-mvn exec:java -Dexec.mainClass="com.zai.deepkomplete.Example"
+java -classpath target/classes com.zai.deepkomplete.Example
