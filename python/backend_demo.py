@@ -17,14 +17,12 @@ def autocomplete():
   try:
     time_start = timeit.default_timer()
     query = request.get_json()
-    suggestions = list(
-      dk.suggest(query=query['query'], history=history)
-    )
+    suggestions = dk.suggest(query=query['query'], history=history)
     time_end = timeit.default_timer()
     print('Response Time:', time_end - time_start)
-    return {'suggestions': suggestions}
+    return {'suggestions': list(suggestions)}
   except:
-    return {'suggestions': []}
+    return []
 
 @app.route('/submit', methods=['POST'])
 def submit():
