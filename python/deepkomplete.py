@@ -33,8 +33,8 @@ class DeepKomplete:
                 
         # Generate synonym mapping
         self.synonym_dict = dict()
-        self.brands_synonym_dict = dict()
-        self.categories_lines_synonym_dict = dict()
+        self.brands_lines_synonym_dict = dict()
+        self.categories_synonym_dict = dict()
         
         for name, name_eng, synonyms in brands_df[[
             'name', 'name_eng', 'synonyms'
@@ -44,15 +44,15 @@ class DeepKomplete:
             if len(name) == 0:
                 continue
             self.synonym_dict[name] = name
-            self.brands_synonym_dict[name] = name
+            self.brands_lines_synonym_dict[name] = name
             if len(name_eng) > 0:
                 self.synonym_dict[name_eng] = name
-                self.brands_synonym_dict[name_eng] = name
+                self.brands_lines_synonym_dict[name_eng] = name
             for synonym in synonyms.split('|'):
                 synonym = synonym.strip()
                 if len(synonym) > 0:
                     self.synonym_dict[synonym] = name
-                    self.brands_synonym_dict[synonym] = name
+                    self.brands_lines_synonym_dict[synonym] = name
 
         for name, synonyms in categories_df[[
             'name', 'synonyms'
@@ -61,12 +61,12 @@ class DeepKomplete:
             if len(name) == 0:
                 continue
             self.synonym_dict[name] = name
-            self.categories_lines_synonym_dict[name] = name
+            self.categories_synonym_dict[name] = name
             for synonym in synonyms.split('|'):
                 synonym = synonym.strip()
                 if len(synonym) > 0:
                     self.synonym_dict[synonym] = name
-                    self.categories_lines_synonym_dict[synonym] = name
+                    self.categories_synonym_dict[synonym] = name
 
         for name, synonyms in lines_df[[
             'name', 'synonyms'
@@ -75,16 +75,16 @@ class DeepKomplete:
             if len(name) == 0:
                 continue
             self.synonym_dict[name] = name
-            self.categories_lines_synonym_dict[name] = name
+            self.brands_lines_synonym_dict[name] = name
             for synonym in synonyms.split('|'):
                 synonym = synonym.strip()
                 if len(synonym) > 0:
                     self.synonym_dict[synonym] = name
-                    self.categories_lines_synonym_dict[synonym] = name
+                    self.brands_lines_synonym_dict[synonym] = name
         
         # Load similarity matrix
         self.similarity_matrix = pd.read_csv(
-            similarity_matrix, header=None
+            similarity_matrix, header=None, dtype=np.float32
         ).values
         
         # Save parameters
@@ -101,15 +101,15 @@ class DeepKomplete:
             subquery = query[:length]
             found_keywords = set()
             
-            for brand in self.brands_synonym_dict:
+            for brand in self.brands_lines_synonym_dict:
                 if brand.startswith(subquery):
                     found_keywords.add(
-                        self.brands_synonym_dict[brand])
+                        self.brands_lines_synonym_dict[brand])
             
-            for category in self.categories_lines_synonym_dict:
+            for category in self.categories_synonym_dict:
                 if subquery in category:
                     found_keywords.add(
-                        self.categories_lines_synonym_dict[category])
+                        self.categories_synonym_dict[category])
             
             if len(found_keywords) > 0:
                 candidates_sequential = [found_keywords]
@@ -149,7 +149,7 @@ class DeepKomplete:
         query = query.upper()
     
         if query in self.bcl2bcl:
-            return bcl2bcl[query]
+            return self.bcl2bcl[query]
 
         found_keywords = self.deterministic_query_analysis(query)
 
