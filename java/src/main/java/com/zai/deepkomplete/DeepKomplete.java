@@ -31,8 +31,8 @@ public class DeepKomplete {
 
     // Mappings
     private Map<String, String> synonymMap;
-    private Map<String, String> brandSynonymMap;
-    private Map<String, String> categoryLineSynonymMap;
+    private Map<String, String> brandLineSynonymMap;
+    private Map<String, String> categorySynonymMap;
     private Map<Integer, String> idx2bcl;
     private Map<String, Integer> bcl2idx;
     private Map<String, String> bcl2bcl;
@@ -44,8 +44,8 @@ public class DeepKomplete {
 
         // Initialize maps
         synonymMap = new HashMap<>(4000, 0.7f);
-        brandSynonymMap = new HashMap<>(2000, 0.7f);
-        categoryLineSynonymMap = new HashMap<>(2000, 0.7f);
+        brandLineSynonymMap = new HashMap<>(2000, 0.7f);
+        categorySynonymMap = new HashMap<>(2000, 0.7f);
         idx2bcl = new HashMap<>(5000, 0.7f);
         bcl2idx = new HashMap<>(5000, 0.7f);
         bcl2bcl = new HashMap<>(20000, 0.7f);
@@ -65,17 +65,17 @@ public class DeepKomplete {
 
                 if (name.length() == 0) continue;
                 synonymMap.put(name, name);
-                brandSynonymMap.put(name, name);
+                brandLineSynonymMap.put(name, name);
 
                 if (engName.length() > 0) {
                     synonymMap.put(engName, name);
-                    brandSynonymMap.put(engName, name);
+                    brandLineSynonymMap.put(engName, name);
                 }
 
                 for (String synonym : synonyms) {
                     if (synonym.length() > 0) {
                         synonymMap.put(synonym.trim(), name);
-                        brandSynonymMap.put(synonym.trim(), name);
+                        brandLineSynonymMap.put(synonym.trim(), name);
                     }
                 }
             }
@@ -94,12 +94,12 @@ public class DeepKomplete {
 
                 if (name.length() == 0) continue;
                 synonymMap.put(name, name);
-                categoryLineSynonymMap.put(name, name);
+                categorySynonymMap.put(name, name);
 
                 for (String synonym : synonyms) {
                     if (synonym.length() > 0) {
                         synonymMap.put(synonym.trim(), name);
-                        categoryLineSynonymMap.put(synonym.trim(), name);
+                        categorySynonymMap.put(synonym.trim(), name);
                     }
                 }
             }
@@ -118,12 +118,12 @@ public class DeepKomplete {
 
                 if (name.length() == 0) continue;
                 synonymMap.put(name, name);
-                categoryLineSynonymMap.put(name, name);
+                brandLineSynonymMap.put(name, name);
 
                 for (String synonym : synonyms) {
                     if (synonym.length() > 0) {
                         synonymMap.put(synonym.trim(), name);
-                        categoryLineSynonymMap.put(synonym.trim(), name);
+                        brandLineSynonymMap.put(synonym.trim(), name);
                     }
                 }
             }
@@ -193,14 +193,14 @@ public class DeepKomplete {
             String subquery = query.substring(0, length);
             Set<String> foundKeywords = new HashSet<String>(10);
 
-            for (String brand : brandSynonymMap.keySet()) {
-                if (brand.startsWith(subquery))
-                    foundKeywords.add(brandSynonymMap.get(brand));
+            for (String brandOrLine : brandLineSynonymMap.keySet()) {
+                if (brandOrLine.startsWith(subquery))
+                    foundKeywords.add(brandLineSynonymMap.get(brandOrLine));
             }
 
-            for (String categoryOrLine : categoryLineSynonymMap.keySet()) {
-                if (categoryOrLine.contains(subquery))
-                    foundKeywords.add(categoryLineSynonymMap.get(categoryOrLine));
+            for (String category : categorySynonymMap.keySet()) {
+                if (category.contains(subquery))
+                    foundKeywords.add(categorySynonymMap.get(category));
             }
 
             if (foundKeywords.size() == 0) continue;
