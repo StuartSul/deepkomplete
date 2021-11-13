@@ -1,6 +1,9 @@
 # Node
 node_modules/
 
+# Data
+data/*.csv
+
 # MacOS
 .DS_Store
 
